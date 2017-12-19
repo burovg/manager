@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
+import { Picker, Text, View } from 'react-native';
 import { Input, Button, Card, CardSection } from './common';
-import { employeeUpdate } from '../actions';
+import { employeeUpdate, employeeCreate } from '../actions';
 import { connect } from 'react-redux';
 
 class EmployeeCreate extends Component{
+
+
+    onButtonPressed(){
+        const {name,phone,shift} = this.props;
+        this.props.employeeCreate({name,phone,shift:shift || 'Monday'});
+    }
+
     render()
     {
         return(
@@ -26,9 +34,24 @@ class EmployeeCreate extends Component{
                     />
                 </CardSection>
                 <CardSection>
+                    
+                    <Text style={styles.pickerTextStyle}>Shift</Text>
+                    <Picker
+                        style={{ flex : 1 }}
+                        selectedValue={this.props.shift}
+                        onValueChange={day => this.props.employeeUpdate({prop:'shift',value:day})}
+                    >
+                        <Picker.Item label="Monday" value="Monday" />
+                        <Picker.Item label="Tuesday" value="Tuesday" />
+                        <Picker.Item label="Wednesday" value="Wednesday" />
+                        <Picker.Item label="Thusday" value="Thusday" />
+                        <Picker.Item label="Friday" value="Friday" />
+                        <Picker.Item label="Sunday" value="Sunday" />
+                    </Picker>
+                    
                 </CardSection>
                 <CardSection>
-                    <Button>
+                    <Button onPress={this.onButtonPressed.bind(this)}>
                         Save
                     </Button>
                 </CardSection>
@@ -37,9 +60,16 @@ class EmployeeCreate extends Component{
     }
 };
 
+const styles = {
+    pickerTextStyle : {
+        fontSize:18,
+        paddingLeft:20
+    }
+};
+
 const mapStateToProps = (state) => {
     const {name,phone,shift} = state.employeeForm;
     return {name,phone,shift};
 };
 
-export default connect(mapStateToProps,{employeeUpdate})(EmployeeCreate);
+export default connect(mapStateToProps,{employeeUpdate,employeeCreate})(EmployeeCreate);
